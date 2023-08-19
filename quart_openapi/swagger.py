@@ -11,12 +11,26 @@ from typing import (Any, Callable, Dict, Generator, Iterable, List, Mapping,
 
 from jsonschema import Draft4Validator
 from quart.routing import Map as RouteMap
-from werkzeug.routing.rules import _part_re as ROUTE_VAR_RE
 
 from .marshmallow import MARSHMALLOW, schema_to_json
 from .resource import Resource, get_expect_args
 from .typing import HeaderType, ValidatorTypes, Schema
 from .utils import extract_path, merge, not_none, parse_docstring
+
+ROUTE_VAR_RE = re.compile(
+    r"""
+    (?P<static>[^<]*)                           # static rule data
+    <
+    (?:
+        (?P<converter>[a-zA-Z_][a-zA-Z0-9_]*)   # converter name
+        (?:\((?P<args>.*?)\))?                  # converter arguments
+        \:                                      # variable delimiter
+    )?
+    (?P<variable>[a-zA-Z_][a-zA-Z0-9_]*)        # variable name
+    >
+    """,
+    re.VERBOSE,
+)
 
 DEFAULT_RESPONSE_DESCRIPTION = 'Success'
 DEFAULT_RESPONSE = {'description': DEFAULT_RESPONSE_DESCRIPTION}
