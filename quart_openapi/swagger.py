@@ -2,7 +2,7 @@
 
 Provides the View class for generating the openapi.json file on the fly based on the Pint instance and decorators
 """
-
+import re
 from collections import OrderedDict
 from http import HTTPStatus
 from itertools import chain
